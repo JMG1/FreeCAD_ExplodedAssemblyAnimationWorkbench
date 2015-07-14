@@ -116,12 +116,12 @@ def NewRoute():
       TD.BasePlacement = Gui.Selection.getSelection()[0].Shape.Placement
       # ADD ROUTE SKETCH
       SelObjName = "Rt_" + Gui.Selection.getSelection()[0].Label
-      TD.RouteName = SelObjName
       SelFace = Gui.Selection.getSelectionEx()[0].SubObjects[0]
       faceCom = SelFace.CenterOfMass
       P_A = SelFace.Edges[0].valueAt( 0.0 )
       V_0 = ( P_A - faceCom ).normalize()
       NewRoute = AAD.addObject("Sketcher::SketchObject", SelObjName)
+      TD.RouteName = NewRoute.Name
       RouteFolder = AAD.getObject( "EA_Routes" )
       RouteFolder.addObject( NewRoute )
       NewRoute.Placement = App.Placement( faceCom , App.Rotation( V_0, 0 ) )
