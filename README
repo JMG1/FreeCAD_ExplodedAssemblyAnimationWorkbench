@@ -1,6 +1,6 @@
 Install on linux (other OS should be very similar):
 
--Go to the .FreeCAD folder in your home directory (is a hidden folder)
+-Go to the .FreeCAD folder in your user directory (/home/username/.FreeCAD), is a hidden folder.
 -If it does not exist, create a folder inside called Mod
 -Download this repository and extract it inside Mod
 -You should have a folder called "FreeCAD_ExplodedAssemblyAnimationWorkbench-master" inside the Mod folder.
