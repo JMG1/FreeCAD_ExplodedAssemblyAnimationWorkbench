@@ -34,14 +34,14 @@ AAD = App.ActiveDocument
 
 
 def NewFolders():
-  ProjectFolder = AAD.getObject( "ExplodedAnimation" )
+  ProjectFolder = FreeCAD.ActiveDocument.getObject( "ExplodedAnimation" )
   try:
     ProjectFolder.Label
     
   except:
-    ProjectFolder = AAD.addObject( "App::DocumentObjectGroup", "ExplodedAnimation" )
-    AnimationData =  AAD.addObject( "App::DocumentObjectGroup", "EA_Data" )
-    AnimationRoutes = AAD.addObject( "App::DocumentObjectGroup", "EA_Routes" )
+    ProjectFolder = FreeCAD.ActiveDocument.addObject( "App::DocumentObjectGroup", "ExplodedAnimation" )
+    AnimationData =  FreeCAD.ActiveDocument.addObject( "App::DocumentObjectGroup", "EA_Data" )
+    AnimationRoutes = FreeCAD.ActiveDocument.addObject( "App::DocumentObjectGroup", "EA_Routes" )
     ProjectFolder.addObject( AnimationData )
     ProjectFolder.addObject( AnimationRoutes )
 
@@ -50,7 +50,7 @@ def NewRoute():
   def createSketch():
     chD.close()
     try:
-      SelObjNameData = "Dt_" + Gui.Selection.getSelection()[0].Label
+      SelObjNameData = "Dt_" + FreeCAD.Gui.Selection.getSelection()[0].Label
       # ADD ROUTE DATA
       class TrajectoryData:
        def __init__(self, obj):
@@ -106,37 +106,37 @@ def NewRoute():
           return
 
       
-      TD = AAD.addObject( "App::FeaturePython", SelObjNameData )
-      dataFolder = AAD.getObject( "EA_Data" )
+      TD = FreeCAD.ActiveDocument.addObject( "App::FeaturePython", SelObjNameData )
+      dataFolder = FreeCAD.ActiveDocument.getObject( "EA_Data" )
       dataFolder.addObject( TD )
       TrajectoryData( TD )
-      TD.ObjectName = Gui.Selection.getSelection()[0].Name
-      TD.COM = Gui.Selection.getSelection()[0].Shape.Placement.Base
-      TD.FirstPoint = Gui.Selection.getSelectionEx()[0].SubObjects[0].CenterOfMass
-      TD.BasePlacement = Gui.Selection.getSelection()[0].Shape.Placement
+      TD.ObjectName = FreeCAD.Gui.Selection.getSelection()[0].Name
+      TD.COM = FreeCAD.Gui.Selection.getSelection()[0].Shape.Placement.Base
+      TD.FirstPoint = FreeCAD.Gui.Selection.getSelectionEx()[0].SubObjects[0].CenterOfMass
+      TD.BasePlacement = FreeCAD.Gui.Selection.getSelection()[0].Shape.Placement
       # ADD ROUTE SKETCH
-      SelObjName = "Rt_" + Gui.Selection.getSelection()[0].Label
-      SelFace = Gui.Selection.getSelectionEx()[0].SubObjects[0]
+      SelObjName = "Rt_" + FreeCAD.Gui.Selection.getSelection()[0].Label
+      SelFace = FreeCAD.Gui.Selection.getSelectionEx()[0].SubObjects[0]
       faceCom = SelFace.CenterOfMass
       P_A = SelFace.Edges[0].valueAt( 0.0 )
       V_0 = ( P_A - faceCom ).normalize()
-      NewRoute = AAD.addObject("Sketcher::SketchObject", SelObjName)
+      NewRoute = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObject", SelObjName)
       TD.RouteName = NewRoute.Name
-      RouteFolder = AAD.getObject( "EA_Routes" )
+      RouteFolder = FreeCAD.ActiveDocument.getObject( "EA_Routes" )
       RouteFolder.addObject( NewRoute )
-      NewRoute.Placement = App.Placement( faceCom , App.Rotation( V_0, 0 ) )
+      NewRoute.Placement = FreeCAD.Placement( faceCom , App.Rotation( V_0, 0 ) )
       NewRoute.ViewObject.LineColor = ( 1.0, 1.0, 0.0 )
       NewRoute.ViewObject.PointColor = ( 1.0, 1.0, 0.0 )
       NewRoute.ViewObject.DrawStyle = "Dotted"
-      Gui.ActiveDocument.setEdit(NewRoute.Label)
-      Gui.activateWorkbench( "PartDesignWorkbench" )
+      FreeCAD.Gui.ActiveDocument.setEdit(NewRoute.Label)
+      FreeCAD.Gui.activateWorkbench( "PartDesignWorkbench" )
 
     
     except: #clean is something went terribly wrong
       FreeCAD.Console.PrintError("Wrong selection!" )
       try:
-        AAD.removeObject( TD.Label )
-        AAD.removeObject( NewRoute.Label )
+        FreeCAD.ActiveDocument.removeObject( TD.Label )
+        FreeCAD.ActiveDocument.removeObject( NewRoute.Label )
         
       except:
         pass
@@ -147,7 +147,7 @@ def NewRoute():
   def fromWire():
     chD.close()
     try:
-      SelObjNameData = "Dt_" + Gui.Selection.getSelection()[0].Label
+      SelObjNameData = "Dt_" + FreeCAD.Gui.Selection.getSelection()[0].Label
       class TrajectoryData:
        def __init__(self, obj):
           obj.addProperty("App::PropertyString",
@@ -203,28 +203,28 @@ def NewRoute():
           return
 
 
-      TD = AAD.addObject( "App::FeaturePython", SelObjNameData )
-      dataFolder = AAD.getObject( "EA_Data" )
+      TD = FreeCAD.ActiveDocument.addObject( "App::FeaturePython", SelObjNameData )
+      dataFolder = FreeCAD.ActiveDocument.getObject( "EA_Data" )
       dataFolder.addObject( TD )
       TrajectoryData( TD )
-      TD.ObjectName = Gui.Selection.getSelection()[0].Name
-      TD.COM = Gui.Selection.getSelection()[0].Shape.Placement.Base
-      TD.FirstPoint = Gui.Selection.getSelection()[0].Shape.Vertexes[0].Point
-      TD.RouteName = Gui.Selection.getSelection()[1].Name
-      TD.BasePlacement = Gui.Selection.getSelection()[0].Shape.Placement
-      Gui.Selection.getSelection()[1].ViewObject.LineColor = (1.000,1.000,0.000)
-      Gui.Selection.getSelection()[1].ViewObject.DrawStyle = "Dotted"
+      TD.ObjectName = FreeCAD.Gui.Selection.getSelection()[0].Name
+      TD.COM = FreeCAD.Gui.Selection.getSelection()[0].Shape.Placement.Base
+      TD.FirstPoint = FreeCAD.Gui.Selection.getSelection()[0].Shape.Vertexes[0].Point
+      TD.RouteName = FreeCAD.Gui.Selection.getSelection()[1].Name
+      TD.BasePlacement = FreeCAD.Gui.Selection.getSelection()[0].Shape.Placement
+      FreeCAD.Gui.Selection.getSelection()[1].ViewObject.LineColor = (1.000,1.000,0.000)
+      FreeCAD.Gui.Selection.getSelection()[1].ViewObject.DrawStyle = "Dotted"
       # ADD WIRE AS ROUTE
-      routeWire = Gui.Selection.getSelection()[1]
-      routeWire.Label = "Rt_" + Gui.Selection.getSelection()[0].Label
-      routeFolder = AAD.getObject( "EA_Routes" )
+      routeWire = FreeCAD.Gui.Selection.getSelection()[1]
+      routeWire.Label = "Rt_" + FreeCAD.Gui.Selection.getSelection()[0].Label
+      routeFolder = FreeCAD.ActiveDocument.getObject( "EA_Routes" )
       routeFolder.addObject( routeWire )
       
     except: #clean is something went terribly wrong
       FreeCAD.Console.PrintError("Wrong selection!" )
       try:
-        AAD.removeObject( TD.Label )
-        AAD.removeObject( NewRoute.Label )
+        FreeCAD.ActiveDocument.removeObject( TD.Label )
+        FreeCAD.ActiveDocument.removeObject( NewRoute.Label )
         
       except:
         pass
@@ -251,11 +251,11 @@ def NewRoute():
 ################ ANIMATION  ENGINE #############################################
 
 def RunAnimation( reverse = False ):
-  EA_DataGroup = App.ActiveDocument.getObject( "EA_Data" ).Group
+  EA_DataGroup = FreeCAD.ActiveDocument.getObject( "EA_Data" ).Group
   if reverse:
     EA_DataGroup = EA_DataGroup[::-1]
   for dataItem in EA_DataGroup:
-    routeItem = AAD.getObject( dataItem.RouteName )
+    routeItem = FreeCAD.ActiveDocument.getObject( dataItem.RouteName )
     routePoints = []
     for point in routeItem.Shape.Vertexes:
       routePoints.append( point.Point )
@@ -267,7 +267,7 @@ def RunAnimation( reverse = False ):
     if reverse:
       routePoints = routePoints[::-1]   
     
-    object = AAD.getObject( dataItem.ObjectName )
+    object = FreeCAD.ActiveDocument.getObject( dataItem.ObjectName )
     stepSize = dataItem.StepSize
     delayTime = 0.01 / ( dataItem.LinearSpeed + 1.0 )
     V_Correction = dataItem.COM - routePoints[0]
@@ -283,22 +283,22 @@ def RunAnimation( reverse = False ):
         #object.Placement.Base = P_a + V_Dir*stepSize*i + V_Correction
         if P_a == RouteStartPoint_0 and not(reverse):
           rot = object.Placement.Rotation
-          object.Placement.Rotation = rot.multiply( App.Rotation( V_RotDir , rotStep*-i ) )
+          object.Placement.Rotation = rot.multiply( FreeCAD.Rotation( V_RotDir , rotStep*-i ) )
           object.Placement.Base = P_a + V_Dir*stepSize*i + V_Correction
         if P_a == RouteStartPoint_1 and reverse:
           rot = object.Placement.Rotation
-          object.Placement.Rotation = rot.multiply( App.Rotation( V_RotDir , rotStep*i ) )
+          object.Placement.Rotation = rot.multiply( FreeCAD.Rotation( V_RotDir , rotStep*i ) )
           object.Placement.Base = P_a + V_Dir*stepSize*i + V_Correction
         
         else:
           object.Placement.Base = P_a + V_Dir*stepSize*i + V_Correction
         
         time.sleep( delayTime )
-        Gui.updateGui()
+        FreeCAD.Gui.updateGui()
       
       object.Placement.Base = P_b + V_Correction
       object.Placement.Rotation = dataItem.BasePlacement.Rotation
-      Gui.updateGui()
+      FreeCAD.Gui.updateGui()
       time.sleep( delayTime )
     
     if reverse:
@@ -307,26 +307,26 @@ def RunAnimation( reverse = False ):
   
 
 def ResetStart():
-  EA_DataGroup = AAD.getObject( "EA_Data" ).Group
+  EA_DataGroup = FreeCAD.ActiveDocument.getObject( "EA_Data" ).Group
   for dataItem in EA_DataGroup:
     routeName = "Rt_" + dataItem.Label[3:]
-    routeItem = AAD.getObject( routeName )
-    object = AAD.getObject( dataItem.ObjectName )
+    routeItem = FreeCAD.ActiveDocument.getObject( routeName )
+    object = FreeCAD.ActiveDocument.getObject( dataItem.ObjectName )
     object.Placement.Base = dataItem.COM
     object.Placement.Rotation = dataItem.BasePlacement.Rotation
-    Gui.updateGui()
+    FreeCAD.Gui.updateGui()
 
 def ResetEnd():
-  EA_DataGroup = AAD.getObject( "EA_Data" ).Group
+  EA_DataGroup = FreeCAD.ActiveDocument.getObject( "EA_Data" ).Group
   for dataItem in EA_DataGroup:
-    routeItem = AAD.getObject( dataItem.RouteName )
+    routeItem = FreeCAD.ActiveDocument.getObject( dataItem.RouteName )
     routePoints = []
     for point in routeItem.Shape.Vertexes:
       routePoints.append( point.Point )
     
     routePoints = routePoints[::-1]
     V_Correction = dataItem.COM - dataItem.FirstPoint
-    object = AAD.getObject( dataItem.ObjectName )
+    object = FreeCAD.ActiveDocument.getObject( dataItem.ObjectName )
     object.Placement.Base = routePoints[0] + V_Correction
     object.Placement.Rotation = dataItem.BasePlacement.Rotation
-    Gui.updateGui()
+    FreeCAD.Gui.updateGui()
